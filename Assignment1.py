@@ -9,18 +9,20 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import os 
 
-# Get the absolute path of the current script directory
-current_dir = os.path.dirname(__file__)
+# Define the load_full_data function
+def load_full_data(file_path):
+    """
+    Load the full data from a CSV file and return a DataFrame.
+    """
+    return pd.read_csv(file_path)
 
-# Construct the full path to the CSV file
-csv_path = os.path.join(current_dir, 'kickstarter.csv')
+# Use the function to load the data
+df = load_full_data('kickstarter.csv')
 
-# Read the CSV file
-df = pd.read_csv(csv_path)
-kickstarter_full = load_full_data(csv_path)
-kickstarter_2016 = kickstarter_full[kickstarter_full['Launched'].str.startswith('2016')]
+# Display the data in Streamlit
+st.write("Kickstarter Campaign Data")
+st.dataframe(df)
 
 st.title("Kickstarter Campaign Analysis - 2016")
 
