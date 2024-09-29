@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Sep 25 21:53:29 2024
-
-@author: vidya
-"""
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -26,6 +19,12 @@ st.dataframe(df)
 
 st.title("Kickstarter Campaign Analysis - 2016")
 
+# Step 1: Filter Dataset for 2016 Campaigns
+# Assuming the dataset has a 'Year' or 'launched' column with campaign launch year
+# Replace 'launched' with the appropriate column name in your dataset
+df['launched'] = pd.to_datetime(df['launched'], errors='coerce')  # Convert to datetime
+kickstarter_2016 = df[df['launched'].dt.year == 2016]  # Filter campaigns launched in 2016
+
 # Display the filtered dataset
 st.subheader("Filtered Dataset for 2016 Campaigns")
 st.write(kickstarter_2016)
@@ -35,18 +34,19 @@ st.subheader("Initial Dataset Exploration")
 critical_columns = ['Category', 'Goal', 'Pledged', 'Backers', 'State']
 st.write("Critical Columns for Analysis:", critical_columns)
 st.write(kickstarter_2016[critical_columns].describe())
-anomalies = kickstarter_2016[(kickstarter_2016['Backers'] == 0) & (kickstarter_2016['Pledged'] > 0)]
-st.write("anomalies: ", anomalies)
 
-#Step 3
-# Standardize state labels to lowercase to avoid mismatch issues
+# Anomaly detection
+anomalies = kickstarter_2016[(kickstarter_2016['Backers'] == 0) & (kickstarter_2016['Pledged'] > 0)]
+st.write("Anomalies: ", anomalies)
+
+# Step 3: Standardize state labels to lowercase to avoid mismatch issues
 kickstarter_2016['State'] = kickstarter_2016['State'].str.lower()
 
 # Chat with Data Section
 st.header("Chat with Data: Is the Dataset Balanced for Campaign States?")
 st.write("""
 Based on a question from Basole & Major (2024), we want to explore whether the dataset is balanced with regard to successful and unsuccessful campaigns.
-This chart, as it allows for easy comparison of the distribution between different categories.
+This chart allows for easy comparison of the distribution between different categories.
 """)
 
 # Add a button to display the plot
@@ -77,7 +77,6 @@ if st.button("Show Campaign State Distribution"):
 else:
     st.write("Click the button above to display the distribution of campaign states.")
 
-
 # Step 4: Top Categories for Successful and Failed Campaigns
 st.subheader("Top 3 Categories for Successful and Failed Campaigns")
 category_success_fail = kickstarter_2016.groupby(['Category', 'State']).size().unstack(fill_value=0)
@@ -98,4 +97,3 @@ ax4.set_title("Distribution of Log-Transformed Funding Goals")
 ax4.set_xlabel("Log10(Goal + 1)")
 ax4.set_ylabel("Number of Campaigns")
 st.pyplot(fig3)
-
