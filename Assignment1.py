@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Step 1: Load and Filter Dataset for 2016 Campaigns
-csv_path = 'C:/Users/vidya/VithyTestAssignment1/kickstarter.csv'
+csv_path = r'C:/Users/vidya/VithyTestAssignment1/kickstarter.csv'
 
 @st.cache_data
 def load_full_data(file_path):
