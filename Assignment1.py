@@ -9,14 +9,16 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import os 
 
-# Step 1: Load and Filter Dataset for 2016 Campaigns
-csv_path = r'C:/Users/vidya/VithyTestAssignment1/kickstarter.csv'
+# Get the absolute path of the current script directory
+current_dir = os.path.dirname(__file__)
 
-@st.cache_data
-def load_full_data(file_path):
-    return pd.read_csv(file_path)
+# Construct the full path to the CSV file
+csv_path = os.path.join(current_dir, 'kickstarter.csv')
 
+# Read the CSV file
+df = pd.read_csv(csv_path)
 kickstarter_full = load_full_data(csv_path)
 kickstarter_2016 = kickstarter_full[kickstarter_full['Launched'].str.startswith('2016')]
 
