@@ -3,27 +3,17 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Define the load_full_data function
+# Step 1: Load and Filter Dataset for 2016 Campaigns
+csv_path = 'https://media.githubusercontent.com/media/Vithy1998/VithyTestAssignment1/refs/heads/main/kickstarter.csv'
+
+@st.cache_data
 def load_full_data(file_path):
-    """
-    Load the full data from a CSV file and return a DataFrame.
-    """
     return pd.read_csv(file_path)
 
-# Use the function to load the data
-df = load_full_data('kickstarter.csv')
-
-# Display the data in Streamlit
-st.write("Kickstarter Campaign Data")
-st.dataframe(df)
+kickstarter_full = load_full_data(csv_path)
+kickstarter_2016 = kickstarter_full[kickstarter_full['Launched'].str.startswith('2016')]
 
 st.title("Kickstarter Campaign Analysis - 2016")
-
-# Step 1: Filter Dataset for 2016 Campaigns
-# Assuming the dataset has a 'Year' or 'launched' column with campaign launch year
-# Replace 'launched' with the appropriate column name in your dataset
-df['launched'] = pd.to_datetime(df['launched'], errors='coerce')  # Convert to datetime
-kickstarter_2016 = df[df['launched'].dt.year == 2016]  # Filter campaigns launched in 2016
 
 # Display the filtered dataset
 st.subheader("Filtered Dataset for 2016 Campaigns")
@@ -34,19 +24,18 @@ st.subheader("Initial Dataset Exploration")
 critical_columns = ['Category', 'Goal', 'Pledged', 'Backers', 'State']
 st.write("Critical Columns for Analysis:", critical_columns)
 st.write(kickstarter_2016[critical_columns].describe())
-
-# Anomaly detection
 anomalies = kickstarter_2016[(kickstarter_2016['Backers'] == 0) & (kickstarter_2016['Pledged'] > 0)]
-st.write("Anomalies: ", anomalies)
+st.write("anomalies: ", anomalies)
 
-# Step 3: Standardize state labels to lowercase to avoid mismatch issues
+#Step 3
+# Standardize state labels to lowercase to avoid mismatch issues
 kickstarter_2016['State'] = kickstarter_2016['State'].str.lower()
 
 # Chat with Data Section
 st.header("Chat with Data: Is the Dataset Balanced for Campaign States?")
 st.write("""
 Based on a question from Basole & Major (2024), we want to explore whether the dataset is balanced with regard to successful and unsuccessful campaigns.
-This chart allows for easy comparison of the distribution between different categories.
+This chart, as it allows for easy comparison of the distribution between different categories.
 """)
 
 # Add a button to display the plot
@@ -76,6 +65,7 @@ if st.button("Show Campaign State Distribution"):
     st.write(balance_message)
 else:
     st.write("Click the button above to display the distribution of campaign states.")
+
 
 # Step 4: Top Categories for Successful and Failed Campaigns
 st.subheader("Top 3 Categories for Successful and Failed Campaigns")
